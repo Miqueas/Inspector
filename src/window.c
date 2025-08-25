@@ -5,7 +5,8 @@
 
 static gpointer inspector_window_parent_class = NULL;
 
-InspectorWindow* inspector_window_new(InspectorApp* app)
+InspectorWindow*
+inspector_window_new(InspectorApp* app)
 {
   InspectorWindow* self = g_object_new(
     INSPECTOR_TYPE_WINDOW,
@@ -18,7 +19,8 @@ InspectorWindow* inspector_window_new(InspectorApp* app)
   return self;
 }
 
-static gboolean inspector_window_do_close_request(GtkWindow* base)
+static gboolean
+inspector_window_do_close_request(GtkWindow* base)
 {
   InspectorWindow* self = INSPECTOR_WINDOW(base);
   GtkApplication* app = gtk_window_get_application(GTK_WINDOW(self));
