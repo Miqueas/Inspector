@@ -19,7 +19,7 @@ inspector_app_new(void)
 }
 
 static void
-inspector_app_do_startup(GApplication *base)
+inspector_app_do_startup(GApplication* base)
 {
   InspectorApp* self = INSPECTOR_APP(base);
   G_APPLICATION_CLASS(inspector_app_parent_class)->startup(G_APPLICATION(self));
@@ -30,28 +30,41 @@ inspector_app_do_startup(GApplication *base)
 }
 
 static void
-inspector_app_do_activate(GApplication *base)
+_inspector_app_show_window(InspectorApp* self)
 {
-  InspectorApp *self = INSPECTOR_APP(base);
   GtkWindow *window = gtk_application_get_active_window(GTK_APPLICATION(self));
   if (window != NULL) gtk_window_present(window);
 }
 
 static void
-inspector_app_do_open(GApplication *base,
-                      GFile** files,
-                      gint n_files,
-                      const gchar *hint)
+inspector_app_do_activate(GApplication* base)
 {
-  // TODO: Handle files
+  _inspector_app_show_window(INSPECTOR_APP(base));
 }
 
 static void
-inspector_app_class_init(InspectorAppClass *klass, gpointer _)
+inspector_app_do_open(GApplication* base,
+                      GFile** files,
+                      gint n_files,
+                      const gchar* hint)
+{
+  _inspector_app_show_window(INSPECTOR_APP(base));
+
+  if (n_files == 0) return;
+
+  for (gint i = 0; i < n_files; i++) {
+    gchar* path = g_file_get_path(files[i]);
+    g_print("Opened file: %s\n", path);
+    g_free(path);
+  }
+}
+
+static void
+inspector_app_class_init(InspectorAppClass* klass, gpointer _)
 {
   inspector_app_parent_class = g_type_class_peek_parent(klass);
-  G_APPLICATION_CLASS(klass)->activate = inspector_app_do_activate;
   G_APPLICATION_CLASS(klass)->startup = inspector_app_do_startup;
+  G_APPLICATION_CLASS(klass)->activate = inspector_app_do_activate;
   G_APPLICATION_CLASS(klass)->open = inspector_app_do_open;
 }
 
